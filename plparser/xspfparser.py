@@ -43,4 +43,4 @@ def parse(data, trackObject, playlistObject):
                 playlist.append(t)
             except:
                 pass
-    return Playlist(Tracks=playlist)
+    return Playlist(Tracks=playlist, Encoding='utf-8')

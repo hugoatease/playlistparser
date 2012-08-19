@@ -14,7 +14,7 @@
     OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     '''
 
-def parse(file, trackObject, playlistObject):
+def parse(file, encoding, trackObject, playlistObject):
     Track = trackObject
     Playlist = playlistObject
     playlist = list()
@@ -44,4 +44,4 @@ def parse(file, trackObject, playlistObject):
             info = None
             fileref = None
     
-    return Playlist(Tracks=playlist)
+    return Playlist(Tracks=playlist, Encoding = encoding)

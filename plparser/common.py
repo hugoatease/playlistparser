@@ -16,6 +16,11 @@
 
 from xml.dom import minidom
 from random import randrange
+try:
+    from chardet.universaldetector import UniversalDetector
+    chardet = True
+except:
+    chardet = False
 
 class Track:
     def __init__(self, Artist = None, Title = None, Album = None, Name = None, Duration = None, File = None):
@@ -78,9 +83,10 @@ class Track:
         return self.Inverted
 
 class Playlist:
-    def __init__(self, Tracks=None):
+    def __init__(self, Tracks=None, Encoding=None):
         self.Tracks = Tracks
         self.Inverted = False
+        self.Encoding = Encoding
     def nameParse(self, invert = False):
         for track in self.Tracks:
             track.nameParse(invert)
@@ -126,8 +132,35 @@ def typeGuess(data):
     except:
         return None
     
-    
-def parse(filename=None, filedata=None, trackObject=Track, playlistObject=Playlist):
+def decode(filename, data):
+    if '.m3u8' in filename:
+        encoding = 'utf-8'
+        data = data.decode(encoding)
+    elif '.m3u' in filename or '.pls' in filename:
+        try:
+            encoding = 'ISO-8859-2'
+            data = data.decode(encoding)
+        except:
+            if chardet:
+                u = UniversalDetector()
+                u.feed(data)
+                u.close()
+                if u.result['confidence'] > 0.5:
+                    try:
+                        encoding = result['encoding']
+                        data = data.decode(encoding)
+                    except:
+                        encoding = 'ascii'
+                else:
+                    encoding = 'ascii'
+            else:
+                encoding = 'ascii'
+    elif '.xml' in filename or '.xspf' in filename:
+        encoding = 'utf-8'
+
+    return {'data' : data, 'encoding' : encoding}
+
+def parse(filename=None, filedata=None, trackObject=Track, playlistObject=Playlist, encoding=None):
     if filedata != None:
         file = filedata
         if filename == None:
@@ -136,31 +169,26 @@ def parse(filename=None, filedata=None, trackObject=Track, playlistObject=Playli
         f = open(filename, 'r')
         file = f.read()
         f.close()
-
-    if '.m3u8' in filename:
-        file = file.decode('utf-8')
-    elif '.m3u' in filename or '.pls' in filename:
-        try:
-            file = file.decode('ISO-8859-2')
-        except:
-            u = UniversalDetector()
-            u.feed(file)
-            u.close()
-            if u.result['confidence'] > 0.5:
-                try:
-                    data = data.decode(result['encoding'])
-                    print 'File encoding automatically detected as ' + result['encoding'] +'. It might be wrong...'
-                except:
-                    print 'Unable to find file encoding. Using escaped ASCII instead of Unicode'
-            else:
-                print 'Unable to find file encoding. Using escaped ASCII instead of Unicode'
     
+    if encoding == None:
+        decoded = decode(filename, file)
+        file = decoded['data']
+        encoding = decoded['encoding']
+    else:
+        try:
+            file = file.decode(encoding)
+        except:
+            decoded = decode(filename, file)
+            file = decoded['data']
+            encoding = decoded['encoding']
+            
+
     if '.m3u' in filename or '.m3u8' in filename:
         import m3uparser
-        return m3uparser.parse(file, trackObject, playlistObject)
+        return m3uparser.parse(file, encoding, trackObject, playlistObject)
     if '.pls' in filename:
         import plsparser
-        return plsparser.parse(file, trackObject, playlistObject)
+        return plsparser.parse(file, encoding, trackObject, playlistObject)
     if '.xspf' in filename:
         import xspfparser
         return xspfparser.parse(file, trackObject, playlistObject)

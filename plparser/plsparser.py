@@ -38,7 +38,7 @@ def getKeyName(genKey):
     global genKeys
     return genKeys[genKey]
 
-def parse(data, trackObject, playlistObject):
+def parse(data, encoding, trackObject, playlistObject):
     Track = trackObject
     Playlist = playlistObject
     playlist = list()
@@ -63,4 +63,4 @@ def parse(data, trackObject, playlistObject):
         else:
             finish = True
     
-    return Playlist(Tracks=playlist)
+    return Playlist(Tracks=playlist, Encoding = encoding)

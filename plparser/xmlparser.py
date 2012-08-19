@@ -42,4 +42,4 @@ def parse(data, trackObject, playlistObject):
                 t.Album = value
             playlist.append(t)
     
-    return Playlist(Tracks=playlist)
+    return Playlist(Tracks=playlist, Encoding='utf-8')
