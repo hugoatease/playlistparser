@@ -14,9 +14,9 @@
     OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     '''
 
-from common import Playlist, Track
-
-def parse(file):
+def parse(file, trackObject, playlistObject):
+    Track = trackObject
+    Playlist = playlistObject
     playlist = list()
     
     lines = file.split('\n')

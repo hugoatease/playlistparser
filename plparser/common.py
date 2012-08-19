@@ -127,7 +127,7 @@ def typeGuess(data):
         return None
     
     
-def parse(filename=None, filedata=None):
+def parse(filename=None, filedata=None, trackObject=Track, playlistObject=Playlist):
     if filedata != None:
         file = filedata
         if filename == None:
@@ -157,16 +157,16 @@ def parse(filename=None, filedata=None):
     
     if '.m3u' in filename or '.m3u8' in filename:
         import m3uparser
-        return m3uparser.parse(file)
+        return m3uparser.parse(file, trackObject, playlistObject)
     if '.pls' in filename:
         import plsparser
-        return plsparser.parse(file)
+        return plsparser.parse(file, trackObject, playlistObject)
     if '.xspf' in filename:
         import xspfparser
-        return xspfparser.parse(file)
+        return xspfparser.parse(file, trackObject, playlistObject)
     if '.xml' in filename:
         import xmlparser
-        return xmlparser.parse(file)
+        return xmlparser.parse(file, trackObject, playlistObject)
 
 if __name__ == '__main__':
     from sys import argv

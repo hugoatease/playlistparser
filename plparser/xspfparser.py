@@ -14,12 +14,13 @@
     OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     '''
 
-from common import Playlist, Track
 from xml.dom import minidom
 
 playlist = list()
 
-def parse(data):
+def parse(data, trackObject, playlistObject):
+    Track = trackObject
+    Playlist = playlistObject
     dom = minidom.parseString(data)
     
     tracks = dom.getElementsByTagName('trackList')[0].getElementsByTagName('track')

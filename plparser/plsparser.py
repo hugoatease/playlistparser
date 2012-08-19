@@ -14,8 +14,6 @@
     OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     '''
 
-from common import Playlist, Track
-
 Keys = ['File', 'Title', 'Length']
 genKeys = dict()
 
@@ -40,7 +38,9 @@ def getKeyName(genKey):
     global genKeys
     return genKeys[genKey]
 
-def parse(data):
+def parse(data, trackObject, playlistObject):
+    Track = trackObject
+    Playlist = playlistObject
     playlist = list()
     data = iniParse(data)
     
